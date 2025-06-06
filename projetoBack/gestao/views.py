@@ -32,21 +32,28 @@ def deletar_aparelho (request, id):
    return redirect('exec_gestao')
 
 
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import Gestao
+
 def atualizar_aparelho(request, id):
-   aparelho = get_object_or_404(Gestao, id=id)
+    aparelho_a_atualizar = get_object_or_404(Gestao, id=id)
 
-   aparelho =request.POST.get('aparelho')
-   consumo = request.POST.get('consumo')
-   tempo = request.POST.get('tempo')
-   dias_de_consumo = request.POST.get('dias_de_uso')
+    if request.method == "POST":
+        nome_do_form = request.POST.get('aparelho')
+        consumo_do_form = request.POST.get('consumo')
+        tempo_do_form = request.POST.get('tempo')
+        dias_do_form = request.POST.get('dias_de_uso')
 
-   aparelho.aparelho = aparelho
-   aparelho.consumo = consumo
-   aparelho.tempo = tempo
-   aparelho.dias_de_consumo = dias_de_consumo
+        aparelho_a_atualizar.aparelho = nome_do_form
+        aparelho_a_atualizar.consumo = consumo_do_form
+        aparelho_a_atualizar.tempo = tempo_do_form
+        aparelho_a_atualizar.dias_de_uso = dias_do_form
+        
+        aparelho_a_atualizar.save()
 
-   aparelho.save()
-   return redirect('exec_gestao')
+        return redirect('exec_gestao')
+
+    return redirect('exec_gestao')
 
 
    
