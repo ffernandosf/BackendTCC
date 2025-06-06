@@ -32,7 +32,7 @@ def deletar_aparelho (request, id):
    return redirect('exec_gestao')
 
 
-def atualizar_aluno(request, id):
+def atualizar_aparelho(request, id):
    aparelho = get_object_or_404(Gestao, id=id)
 
    aparelho =request.POST.get('aparelho')
@@ -45,7 +45,7 @@ def atualizar_aluno(request, id):
    aparelho.tempo = tempo
    aparelho.dias_de_consumo = dias_de_consumo
 
-   aparelho.sabe()
+   aparelho.save()
    return redirect('exec_gestao')
 
 
