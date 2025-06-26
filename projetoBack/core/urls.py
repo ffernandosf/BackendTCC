@@ -8,9 +8,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('usuarios.urls')),
     path('admin/', admin.site.urls),
-    path('api/', include('gestao.urls')), # Suas rotas existentes
-    path('api/geo/', include('geolocation.urls')), # Adicione esta linha
- 
 ]
 
 
