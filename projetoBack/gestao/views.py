@@ -1,8 +1,9 @@
-
+import requests
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Gestao, Analise  
 from django.db.models import Sum     
-from decimal import Decimal         
+from decimal import Decimal  
+from django.http import JsonResponse       
 
 
 def exec_gestao(request):
@@ -68,3 +69,42 @@ def deletar_aparelho(request, id):
     aparelho = get_object_or_404(Gestao, id=id)
     aparelho.delete()
     return redirect('exec_gestao')
+
+
+def get_cep_from_coords(request):
+    lat = request.GET.get('lat')
+    lon = request.GET.get('lon')
+
+    if not lat or not lon:
+        return JsonResponse({'erro': 'Latitude e Longitude são obrigatórias'}, status=400)
+
+    try:
+        lat = float(lat)
+        lon = float(lon)
+    except ValueError:
+        return JsonResponse({'erro': 'Latitude e Longitude devem ser números válidos'}, status=400)
+
+    url = f"https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat={lat}&lon={lon}"
+    headers = {
+        'User-Agent': 'GerenciadorGastosEletricos/1.0 (contato@seudominio.com)'  # personalize com seu e-mail
+    }
+
+    try:
+        response = requests.get(url, headers=headers, timeout=5)
+        response.raise_for_status()
+        data = response.json()
+        address = data.get('address', {})
+
+        # A cidade pode estar em diferentes campos
+        cidade = address.get('city') or address.get('town') or address.get('village')
+
+        if cidade:
+            return JsonResponse({'cidade': cidade})
+        else:
+            return JsonResponse({'erro': 'Cidade não encontrada'}, status=404)
+
+    except requests.exceptions.RequestException as e:
+        return JsonResponse({'erro': f'Falha na API externa: {e}'}, status=502)
+
+
+

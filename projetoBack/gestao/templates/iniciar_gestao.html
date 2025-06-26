@@ -37,8 +37,45 @@
     </style>
   </head>
   <body>
+<script>
+  window.onload = function () {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(function (position) {
+        const lat = position.coords.latitude;
+        const lon = position.coords.longitude;
+
+        fetch(`/geolocation/?lat=${lat}&lon=${lon}`)
+          .then(response => response.json())
+          .then(data => {
+            let localizacaoTexto = '';
+            if (data.cidade) {
+              localizacaoTexto = `Localização aproximada: ${data.cidade}`;
+            } else if (data.erro) {
+              localizacaoTexto = `Erro: ${data.erro}`;
+            }
+
+            const header = document.getElementById('localizacao-header');
+            if (header) {
+              header.textContent = localizacaoTexto;
+            }
+          })
+          .catch(error => {
+            console.error('Erro ao buscar localização:', error);
+          });
+      });
+    } else {
+      console.warn('Geolocalização não é suportada neste navegador.');
+    }
+  };
+</script>
+
     
     <header class="header">
+    <header>
+        <h2 id="localizacao-header">Carregando localização...</h2>
+    </header>
+
+
         <div class="container d-flex justify-content-between align-items-center">
             <h1 class="h4 mb-0">Gestão de Consumo</h1>
             <a href="{% url 'gerenciar_usuarios' %}" class="btn btn-primary">Gerenciar Usuários</a>
