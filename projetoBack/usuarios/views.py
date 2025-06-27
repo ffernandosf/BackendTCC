@@ -1,45 +1,22 @@
-from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
+from rest_framework import viewsets, permissions
+from .serializers import UserSerializer, UserCreateSerializer
 
-def gerenciar_usuarios(request):
-  
-    if request.method == 'POST':
-        username = request.POST.get('username')
-        email = request.POST.get('email')
-        password = request.POST.get('password')
-
-        if username and email and password:
-            user = User.objects.create_user(username=username, email=email, password=password)
-            user.save()
-        
-        return redirect('gerenciar_usuarios')
-
-    usuarios = User.objects.all().order_by('id')
-    return render(request, 'usuarios/crud.html', {'usuarios': usuarios})
-
-
-def atualizar_usuario(request, id):
-   
-    if request.method == 'POST':
-        
-        usuario = get_object_or_404(User, id=id)
-        usuario.username = request.POST.get('username')
-        usuario.email = request.POST.get('email')
-        
-        password = request.POST.get('password')
-        if password:
-            usuario.set_password(password)
-        
-        usuario.save()
-
-
-    return redirect('gerenciar_usuarios')
-
-
-def deletar_usuario(request, id):
-    # Encontra o usuário para deletar
-    usuario = get_object_or_404(User, id=id)
-    usuario.delete()
+class UserViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows users to be viewed or edited.
+    """
+    queryset = User.objects.all().order_by('-date_joined')
     
-    # Redireciona de volta para a página de gerenciamento
-    return redirect('gerenciar_usuarios')
+    # Define permissões. Para manter como antes (qualquer um pode editar),
+    # usamos AllowAny. Em um app real, você usaria IsAdminUser.
+    permission_classes = [permissions.AllowAny] 
+
+    def get_serializer_class(self):
+        """
+        Retorna um serializer diferente para a ação de 'create'.
+        Isso garante que a senha seja tratada corretamente (hashed).
+        """
+        if self.action == 'create':
+            return UserCreateSerializer
+        return UserSerializer

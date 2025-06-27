@@ -1,12 +1,12 @@
-from django.urls import path
-from . import views
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from .views import UserViewSet
 
+# Cria um router e registra nossa viewset com ele.
+router = DefaultRouter()
+router.register(r'', UserViewSet, basename='user')
+
+# As URLs da API são determinadas automaticamente pelo router.
 urlpatterns = [
-    
-    path('gerenciar/', views.gerenciar_usuarios, name='gerenciar_usuarios'),
-    
-    path('atualizar/<int:id>/', views.atualizar_usuario, name='atualizar_usuario'),
-    
-    
-    path('deletar/<int:id>/', views.deletar_usuario, name='deletar_usuario'),
+    path('', include(router.urls)),
 ]
