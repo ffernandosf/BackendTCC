@@ -1,27 +1,20 @@
-
 from django.contrib import admin
 from django.urls import path, include
-
-# Este é o arquivo de URLs principal do seu projeto.
-# A responsabilidade dele é direcionar as requisições para os apps corretos.
+from rest_framework.authtoken import views as authtoken_views
+from gestao import views as gestao_views # Importe as views de gestao
 
 urlpatterns = [
-    # 1. Rota para a interface de administração do Django.
-    # Deve haver apenas uma.
     path("admin/", admin.site.urls),
+    
+    # --- ROTAS DA API (para o app móvel) ---
+    path("api/usuarios/", include("usuarios.urls")),
+    path("api/login/", authtoken_views.obtain_auth_token, name="api_login"),
 
-    # 2. Rota para a API do app de usuários.
-    # Todas as URLs definidas em 'usuarios.urls' serão prefixadas com 'api/usuarios/'.
-    # Exemplo: http://127.0.0.1:8000/api/usuarios/
-    path('api/usuarios/', include('usuarios.urls')),
-
-    # 3. Rota para o app de gestão.
-    # Como o caminho é vazio (""), as URLs de 'gestao.urls'
-    # serão acessadas a partir da raiz do site.
-    # Exemplo: http://127.0.0.1:8000/
-    path("", include('gestao.urls')),
+    # --- ROTAS DA INTERFACE WEB ---
+    # A rota raiz agora aponta para a view de login
+    path("", gestao_views.login_view, name="login"), 
+    
+    # A rota /gestao/ agora leva para as URLs do app de gestão
+    # Acessível apenas após o login, graças ao @login_required na view
+    path("gestao/", include("gestao.urls")),
 ]
-
-
-
-

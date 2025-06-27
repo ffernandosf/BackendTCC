@@ -3,7 +3,28 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import Gestao, Analise  
 from django.db.models import Sum     
 from decimal import Decimal  
-from django.http import JsonResponse       
+from django.http import JsonResponse
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
+
+
+# ... (mantenha suas outras views: exec_gestao, deletar_aparelho, etc.)
+
+def login_view(request):
+    if request.method == 'POST':
+        usuario_form = request.POST.get('username')
+        senha_form = request.POST.get('password')
+        
+        user = authenticate(request, username=usuario_form, password=senha_form)
+        
+        if user is not None:
+            login(request, user)
+            # Altere o redirecionamento para a URL da página de gestão
+            return redirect('/gestao/') 
+        else:
+            return render(request, 'login.html', {'error': 'Usuário ou senha inválidos'})
+            
+    return render(request, 'login.html')
 
 
 def exec_gestao(request):

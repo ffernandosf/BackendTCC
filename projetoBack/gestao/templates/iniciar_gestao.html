@@ -84,7 +84,7 @@
 
     <div class="container main-container">
         <h2>Cadastrar Aparelho</h2>
-        <form action="{% url 'exec_gestao' %}" method="POST"> {% csrf_token %}
+      <form action="{% url 'pagina_gestao' %}" method="POST"> {% csrf_token %}
             <div class="mb-3">
                 <label for="aparelho" class="form-label">Aparelho</label>
                 <input type="text" id="aparelho" name="aparelho" class="form-control" placeholder="Ex: Geladeira" required>
