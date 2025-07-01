@@ -1,10 +1,31 @@
-
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Gestao, Analise  # 1. IMPORTE O MODELO 'Analise'
-from django.db.models import Sum      # 2. IMPORTE 'Sum' para fazer somas
-from decimal import Decimal          # 3. IMPORTE 'Decimal' para lidar com valores monetários
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from .models import Gestao, Analise
+from django.db.models import Sum
+from decimal import Decimal
+def login_view(request):
+    if request.user.is_authenticated:
+        return redirect('exec_gestao')
+    
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(request, username=username, password=password)
+        
+        if user is not None:
+            login(request, user)
+            return redirect('exec_gestao')
+        else:
+            return render(request, 'login.html', {'error': 'Usuário ou senha inválidos'})
+    
+    return render(request, 'login.html')
 
+def logout_view(request):
+    logout(request)
+    return redirect('login')
 
+@login_required
 def exec_gestao(request):
     # O bloco POST para criar um novo aparelho continua o mesmo.
     # Ele cria o objeto Gestao, o signal cria a Análise, e depois redireciona.
@@ -52,7 +73,7 @@ def exec_gestao(request):
     # Renderiza o template com o contexto completo
     return render(request, "iniciar_gestao.html", context)
 
-
+@login_required
 def atualizar_aparelho(request, id):
     # Esta view já estava correta. Ao salvar, o signal recalcula a análise.
     # O redirect para 'exec_gestao' garante que a página seja recarregada com os novos dados.
@@ -68,7 +89,7 @@ def atualizar_aparelho(request, id):
 
     return redirect('exec_gestao')
 
-
+@login_required
 def deletar_aparelho(request, id):
     # Esta view já estava correta.
     # Como o modelo Analise tem 'on_delete=models.CASCADE', a análise associada é deletada automaticamente.

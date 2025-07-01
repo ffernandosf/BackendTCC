@@ -34,7 +34,14 @@
   <body>
     
     <div class="container">
-        <h2>Cadastrar Aparelho</h2>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2 class="mb-0">Gestão de Consumo</h2>
+            <div>
+                <a href="/api/usuarios/" class="btn btn-outline-primary me-2">Gerenciar Usuários</a>
+                <a href="{% url 'logout' %}" class="btn btn-outline-danger">Sair</a>
+            </div>
+        </div>
+        <h3>Cadastrar Aparelho</h3>
         <form action="{% url 'exec_gestao' %}" method="POST"> {% csrf_token %}
             <div class="mb-3">
                 <label for="aparelho" class="form-label">Aparelho</label>
@@ -60,7 +67,7 @@
         </form>
         <hr> 
  
-        <h2>Aparelhos Cadastrados</h2>
+        <h3>Aparelhos Cadastrados</h3>
         <div class="table-responsive">
             <table class="table table-striped table-hover">
                 <thead class="table-dark">
@@ -92,7 +99,7 @@
         </div>
         
         <hr>
-        <h2>Análise de Consumo Mensal</h2>
+        <h3>Análise de Consumo Mensal</h3>
         <div class="table-responsive">
             <table class="table table-striped table-hover">
                 <thead class="table-dark">
