@@ -6,9 +6,9 @@ from gestao import views as gestao_views # Importe as views de gestao
 urlpatterns = [
     path("admin/", admin.site.urls),
     
-    # --- ROTAS DA API (para o app móvel) ---
+    # --- ROTAS DA API ---
     path("api/usuarios/", include("usuarios.urls")),
-    path("api/login/", authtoken_views.obtain_auth_token, name="api_login"),
+    path("api/gestao/", include("gestao.urls")),
 
     # --- ROTAS DA INTERFACE WEB ---
     # A rota raiz agora aponta para a view de login

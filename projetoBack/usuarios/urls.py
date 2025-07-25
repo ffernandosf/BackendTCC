@@ -1,12 +1,14 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import UserViewSet
+from .auth_views import CustomAuthToken, logout_view, revoke_tokens
 
-# Cria um router e registra nossa viewset com ele.
 router = DefaultRouter()
 router.register(r'', UserViewSet, basename='user')
 
-# As URLs da API são determinadas automaticamente pelo router.
 urlpatterns = [
     path('', include(router.urls)),
+    path('login/', CustomAuthToken.as_view(), name='api_login'),
+    path('logout/', logout_view, name='api_logout'),
+    path('revoke-tokens/', revoke_tokens, name='revoke_tokens'),
 ]

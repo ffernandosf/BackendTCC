@@ -42,7 +42,7 @@ def exec_gestao(request):
             tempo=tempo,
             dias_de_uso=dias_de_consumo,
         )
-        return redirect('exec_gestao')
+        return redirect('pagina_gestao')
     
    
 
@@ -82,14 +82,14 @@ def atualizar_aparelho(request, id):
         
         aparelho_a_atualizar.save() 
 
-    return redirect('exec_gestao')
+    return redirect('pagina_gestao')
 
 
 def deletar_aparelho(request, id):
 
     aparelho = get_object_or_404(Gestao, id=id)
     aparelho.delete()
-    return redirect('exec_gestao')
+    return redirect('pagina_gestao')
 
 
 def get_cep_from_coords(request):

@@ -78,7 +78,13 @@
 
         <div class="container d-flex justify-content-between align-items-center">
             <h1 class="h4 mb-0">Gestão de Consumo</h1>
-           <a href="{% url 'user-list' %}" class="btn btn-primary">Gerenciar Usuários</a>
+            <div>
+                {% if user.is_staff %}
+                <a href="/admin/" class="btn btn-primary">Gerenciar Usuários</a>
+                {% else %}
+                <a href="/api/usuarios/{{ user.id }}/" class="btn btn-secondary">Meus Dados</a>
+                {% endif %}
+            </div>
         </div>
     </header>
 
