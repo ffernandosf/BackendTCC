@@ -4,8 +4,10 @@ from django.dispatch import receiver
 from decimal import Decimal
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.contrib.auth.models import User
 
 class Gestao (models.Model):
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     aparelho = models.CharField(max_length=255, blank=False)
     consumo = models.CharField(max_length=20, blank=False)
     tempo = models.CharField(max_length=100)
@@ -59,7 +61,7 @@ class Analise(models.Model):
 
 
 # --- Signal para automatizar a análise ---
-# Este código será executado sempre que um objeto Gestao for salvo (novo ou atualizado)
+
 @receiver(post_save, sender=Gestao)
 def criar_ou_atualizar_analise(sender, instance, created, **kwargs):
     if created:

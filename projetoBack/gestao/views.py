@@ -8,7 +8,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 
 
-# ... (mantenha suas outras views: exec_gestao, deletar_aparelho, etc.)
+
 
 def login_view(request):
     if request.method == 'POST':
@@ -27,6 +27,7 @@ def login_view(request):
     return render(request, 'login.html')
 
 
+@login_required
 def exec_gestao(request):
    
     if request.method == 'POST':
@@ -37,6 +38,7 @@ def exec_gestao(request):
 
       
         Gestao.objects.create(
+            usuario=request.user,
             aparelho=aparelho,
             consumo=consumo,
             tempo=tempo,
@@ -46,10 +48,10 @@ def exec_gestao(request):
     
    
 
-    # Busca todos os aparelhos para a primeira tabela
-    aparelhos = Gestao.objects.order_by('id')
+    # Busca apenas os aparelhos do usuário logado
+    aparelhos = Gestao.objects.filter(usuario=request.user).order_by('id')
 
-    analises = Analise.objects.select_related('gestao').all()
+    analises = Analise.objects.select_related('gestao').filter(gestao__usuario=request.user)
 
     # Calcula os totais de consumo e custo a partir das análises
     totais = analises.aggregate(
@@ -70,9 +72,10 @@ def exec_gestao(request):
     return render(request, "iniciar_gestao.html", context)
 
 
+@login_required
 def atualizar_aparelho(request, id):
    
-    aparelho_a_atualizar = get_object_or_404(Gestao, id=id)
+    aparelho_a_atualizar = get_object_or_404(Gestao, id=id, usuario=request.user)
 
     if request.method == "POST":
         aparelho_a_atualizar.aparelho = request.POST.get('aparelho')
@@ -85,9 +88,10 @@ def atualizar_aparelho(request, id):
     return redirect('pagina_gestao')
 
 
+@login_required
 def deletar_aparelho(request, id):
 
-    aparelho = get_object_or_404(Gestao, id=id)
+    aparelho = get_object_or_404(Gestao, id=id, usuario=request.user)
     aparelho.delete()
     return redirect('pagina_gestao')
 

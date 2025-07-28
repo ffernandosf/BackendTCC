@@ -4,7 +4,7 @@ from .models import Gestao, Analise
 class GestaoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Gestao
-        fields = ['id', 'aparelho', 'consumo', 'tempo', 'dias_de_uso']
+        fields = ['id', 'aparelho', 'consumo', 'tempo', 'dias_de_uso', 'usuario']
 
 class AnaliseSerializer(serializers.ModelSerializer):
     gestao = GestaoSerializer(read_only=True)

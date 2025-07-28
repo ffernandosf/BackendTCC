@@ -1,0 +1,21 @@
+{
+  "id": "remote-env",
+  "name": "Remote Environment",
+  "values": [
+    {
+      "key": "base_url",
+      "value": "https://sua-api-remota.herokuapp.com",
+      "enabled": true
+    },
+    {
+      "key": "token",
+      "value": "",
+      "enabled": true
+    },
+    {
+      "key": "aparelho_id",
+      "value": "1",
+      "enabled": true
+    }
+  ]
+}

@@ -1,0 +1,186 @@
+{
+  "info": {
+    "name": "Sistema Gestão Energia API",
+    "description": "Coleção para testar APIs do sistema de gestão de energia elétrica",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "{{base_url}}",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "{{token}}",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"username\": \"testuser\",\n    \"password\": \"test123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/login/",
+              "host": ["{{base_url}}"],
+              "path": ["api", "login", ""]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.environment.set('token', response.token);",
+                  "    pm.test('Token saved', function () {",
+                  "        pm.expect(response.token).to.not.be.undefined;",
+                  "    });",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/usuarios/logout/",
+              "host": ["{{base_url}}"],
+              "path": ["api", "usuarios", "logout", ""]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Gestão",
+      "item": [
+        {
+          "name": "Listar Aparelhos",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/gestao/aparelhos/",
+              "host": ["{{base_url}}"],
+              "path": ["api", "gestao", "aparelhos", ""]
+            }
+          }
+        },
+        {
+          "name": "Criar Aparelho",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"aparelho\": \"Geladeira\",\n    \"consumo\": \"150\",\n    \"tempo\": \"24\",\n    \"dias_de_uso\": 30\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/gestao/aparelhos/",
+              "host": ["{{base_url}}"],
+              "path": ["api", "gestao", "aparelhos", ""]
+            }
+          }
+        },
+        {
+          "name": "Atualizar Aparelho",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"aparelho\": \"Geladeira Atualizada\",\n    \"consumo\": \"180\",\n    \"tempo\": \"24\",\n    \"dias_de_uso\": 30\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/gestao/aparelhos/{{aparelho_id}}/",
+              "host": ["{{base_url}}"],
+              "path": ["api", "gestao", "aparelhos", "{{aparelho_id}}", ""]
+            }
+          }
+        },
+        {
+          "name": "Deletar Aparelho",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/gestao/aparelhos/{{aparelho_id}}/",
+              "host": ["{{base_url}}"],
+              "path": ["api", "gestao", "aparelhos", "{{aparelho_id}}", ""]
+            }
+          }
+        },
+        {
+          "name": "Listar Análises",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/gestao/analises/",
+              "host": ["{{base_url}}"],
+              "path": ["api", "gestao", "analises", ""]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

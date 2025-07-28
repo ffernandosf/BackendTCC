@@ -1,0 +1,21 @@
+{
+  "id": "local-env",
+  "name": "Local Environment",
+  "values": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000",
+      "enabled": true
+    },
+    {
+      "key": "token",
+      "value": "",
+      "enabled": true
+    },
+    {
+      "key": "aparelho_id",
+      "value": "1",
+      "enabled": true
+    }
+  ]
+}
