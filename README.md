@@ -101,3 +101,27 @@ Authorization: Token abc123...
 - **Admin**: `http://localhost:8000/admin/`
 - **Web Interface**: `http://localhost:8000/gestao/`
 - **API Base**: `http://localhost:8000/api/`
+
+
+
+## Atividade 3 - CRUD WEB
+
+O CRUD WEB de usuários está localizado no template [usuarios/templates/usuarios/crud.html](projetoBack/usuarios/templates/usuarios/crud.html). Ele permite que administradores criem, atualizem e deletem usuários diretamente pela interface web. O funcionamento se dá por meio de formulários HTML que enviam requisições POST para as views responsáveis pelo gerenciamento dos usuários. Os dados são exibidos em uma tabela, permitindo edição inline e exclusão com confirmação.
+
+---
+
+## Atividade 4 - CRUD API
+
+O CRUD da API está implementado no [UserViewSet](projetoBack/usuarios/views.py) e registrado nas rotas do arquivo [usuarios/urls.py](projetoBack/usuarios/urls.py) sob o endpoint `/api/users/`. Ele utiliza o Django REST Framework para expor endpoints RESTful para criação, leitura, atualização e exclusão de usuários. O acesso é protegido por autenticação, e usuários comuns só podem acessar seus próprios dados, enquanto administradores têm acesso a todos.
+
+---
+
+## Atividade 5 - AUTH API
+
+A autenticação da API está implementada em [usuarios/simple_login.py](projetoBack/usuarios/simple_login.py) e [usuarios/auth_views.py](projetoBack/usuarios/auth_views.py). Os endpoints principais são `/api/login/` e `/api/usuarios/logout/`. O login retorna um token de autenticação, que deve ser usado no header `Authorization` das requisições subsequentes. O logout e a revogação de tokens também são suportados, garantindo segurança nas sessões.
+
+---
+
+## Atividade 6 - ORM
+
+O uso do ORM (Object-Relational Mapping) do Django está presente nos arquivos de modelos, especialmente em [gestao/models.py](projetoBack/gestao/models.py) e [usuarios/models.py](projetoBack/usuarios/models.py). O ORM permite manipular dados do banco de dados usando classes Python, facilitando operações como criação, consulta, atualização e exclusão de registros sem a necessidade de escrever SQL manualmente. Os modelos `Gestao`, `Analise` e o modelo padrão de `User` são exemplos de uso do ORM neste projeto.
