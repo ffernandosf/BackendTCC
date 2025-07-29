@@ -1,0 +1,431 @@
+{
+  "info": {
+    "name": "Teste Relacionamento - Segurança entre Usuários",
+    "description": "Testes para verificar que usuários não podem excluir dados de outros usuários",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://127.0.0.1:8000",
+      "type": "string"
+    },
+    {
+      "key": "token_user1",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "token_user2",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "aparelho_user1_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "aparelho_user2_id",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Setup - Login Usuários",
+      "item": [
+        {
+          "name": "Login User1",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"username\": \"user1\",\n    \"password\": \"test123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/login/",
+              "host": ["{{base_url}}"],
+              "path": ["api", "login", ""]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('token_user1', response.token);",
+                  "    pm.test('User1 token saved', function () {",
+                  "        pm.expect(response.token).to.not.be.undefined;",
+                  "    });",
+                  "} else {",
+                  "    pm.test('Login failed for User1', function () {",
+                  "        pm.expect(pm.response.code).to.equal(200);",
+                  "    });",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login User2",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"username\": \"user2\",\n    \"password\": \"test123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/login/",
+              "host": ["{{base_url}}"],
+              "path": ["api", "login", ""]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('token_user2', response.token);",
+                  "    pm.test('User2 token saved', function () {",
+                  "        pm.expect(response.token).to.not.be.undefined;",
+                  "    });",
+                  "} else {",
+                  "    pm.test('Login failed for User2', function () {",
+                  "        pm.expect(pm.response.code).to.equal(200);",
+                  "    });",
+                  "}"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "2. Criar Dados - Cada Usuário",
+      "item": [
+        {
+          "name": "User1 - Criar Aparelho",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token_user1}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"aparelho\": \"Geladeira User1\",\n    \"consumo\": \"150\",\n    \"tempo\": \"24\",\n    \"dias_de_uso\": 30\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/gestao/aparelhos/",
+              "host": ["{{base_url}}"],
+              "path": ["api", "gestao", "aparelhos", ""]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('aparelho_user1_id', response.id);",
+                  "    pm.test('User1 aparelho created', function () {",
+                  "        pm.expect(response.aparelho).to.equal('Geladeira User1');",
+                  "    });",
+                  "} else {",
+                  "    pm.test('Failed to create aparelho for User1', function () {",
+                  "        pm.expect(pm.response.code).to.equal(201);",
+                  "    });",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "User2 - Criar Aparelho",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token_user2}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"aparelho\": \"TV User2\",\n    \"consumo\": \"100\",\n    \"tempo\": \"8\",\n    \"dias_de_uso\": 30\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/gestao/aparelhos/",
+              "host": ["{{base_url}}"],
+              "path": ["api", "gestao", "aparelhos", ""]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('aparelho_user2_id', response.id);",
+                  "    pm.test('User2 aparelho created', function () {",
+                  "        pm.expect(response.aparelho).to.equal('TV User2');",
+                  "    });",
+                  "} else {",
+                  "    pm.test('Failed to create aparelho for User2', function () {",
+                  "        pm.expect(pm.response.code).to.equal(201);",
+                  "    });",
+                  "}"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "3. Teste Segurança - Tentativa de Exclusão Cruzada",
+      "item": [
+        {
+          "name": "❌ User1 tenta deletar aparelho do User2 (DEVE FALHAR)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token_user1}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/gestao/aparelhos/{{aparelho_user2_id}}/",
+              "host": ["{{base_url}}"],
+              "path": ["api", "gestao", "aparelhos", "{{aparelho_user2_id}}", ""]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('User1 CANNOT delete User2 aparelho', function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([403, 404]);",
+                  "});",
+                  "",
+                  "pm.test('Security check passed - Cross-user deletion blocked', function () {",
+                  "    pm.expect(pm.response.code).to.not.equal(204);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "❌ User2 tenta deletar aparelho do User1 (DEVE FALHAR)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token_user2}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/gestao/aparelhos/{{aparelho_user1_id}}/",
+              "host": ["{{base_url}}"],
+              "path": ["api", "gestao", "aparelhos", "{{aparelho_user1_id}}", ""]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('User2 CANNOT delete User1 aparelho', function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([403, 404]);",
+                  "});",
+                  "",
+                  "pm.test('Security check passed - Cross-user deletion blocked', function () {",
+                  "    pm.expect(pm.response.code).to.not.equal(204);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "4. Verificação - Dados Ainda Existem",
+      "item": [
+        {
+          "name": "User1 - Verificar seu aparelho ainda existe",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token_user1}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/gestao/aparelhos/",
+              "host": ["{{base_url}}"],
+              "path": ["api", "gestao", "aparelhos", ""]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    const user1Aparelho = response.find(a => a.aparelho === 'Geladeira User1');",
+                  "    pm.test('User1 aparelho still exists', function () {",
+                  "        pm.expect(user1Aparelho).to.not.be.undefined;",
+                  "    });",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "User2 - Verificar seu aparelho ainda existe",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token_user2}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/gestao/aparelhos/",
+              "host": ["{{base_url}}"],
+              "path": ["api", "gestao", "aparelhos", ""]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    const user2Aparelho = response.find(a => a.aparelho === 'TV User2');",
+                  "    pm.test('User2 aparelho still exists', function () {",
+                  "        pm.expect(user2Aparelho).to.not.be.undefined;",
+                  "    });",
+                  "}"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "5. Teste Positivo - Usuário pode deletar próprios dados",
+      "item": [
+        {
+          "name": "✅ User1 deleta seu próprio aparelho (DEVE FUNCIONAR)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token_user1}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/gestao/aparelhos/{{aparelho_user1_id}}/",
+              "host": ["{{base_url}}"],
+              "path": ["api", "gestao", "aparelhos", "{{aparelho_user1_id}}", ""]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('User1 CAN delete own aparelho', function () {",
+                  "    pm.expect(pm.response.code).to.equal(204);",
+                  "});",
+                  "",
+                  "pm.test('Own data deletion successful', function () {",
+                  "    pm.expect(pm.response.code).to.not.be.oneOf([403, 404]);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "✅ User2 deleta seu próprio aparelho (DEVE FUNCIONAR)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Token {{token_user2}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/gestao/aparelhos/{{aparelho_user2_id}}/",
+              "host": ["{{base_url}}"],
+              "path": ["api", "gestao", "aparelhos", "{{aparelho_user2_id}}", ""]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('User2 CAN delete own aparelho', function () {",
+                  "    pm.expect(pm.response.code).to.equal(204);",
+                  "});",
+                  "",
+                  "pm.test('Own data deletion successful', function () {",
+                  "    pm.expect(pm.response.code).to.not.be.oneOf([403, 404]);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

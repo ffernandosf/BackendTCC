@@ -15,5 +15,5 @@ urlpatterns = [
     path("geolocation/", views.get_cep_from_coords, name="geolocation"),
     
     # --- ROTAS DA API ---
-    path('api/', include(router.urls)),
+    path('', include(router.urls)),
 ]

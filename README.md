@@ -1,55 +1,154 @@
-# BackendTCC - Sistema de Gestão de Consumo Elétrico
+# 🔋 ECOWATT - Sistema de Gestão de Energia Elétrica
 
-## Como Iniciar o Projeto
+API REST desenvolvida em Django para gerenciamento inteligente de consumo de energia elétrica.
 
-### 1. Clonar o repositório
+## 🚀 Instalação e Configuração
+
+### 1. Pré-requisitos
+- Python 3.8+
+- pip (gerenciador de pacotes Python)
+
+### 2. Configuração do Ambiente
+
 ```bash
-git clone https://github.com/ffernandosf/BackendTCC.git
-cd BackendTCC
-```
+# Clone o repositório
+git clone <url-do-repositorio>
+cd DB2/BackendTCC/projetoBack
 
-### 2. Configurar ambiente virtual
-```bash
+# Crie e ative o ambiente virtual
 python -m venv venv
-venv\Scripts\activate  # Windows
-# ou
-source venv/bin/activate  # Linux/Mac
-```
 
-### 3. Instalar dependências
-```bash
+# Windows
+venv\Scripts\activate
+
+# Linux/Mac
+source venv/bin/activate
+
+# Instale as dependências
 pip install -r requirements.txt
 ```
 
-### 4. Configurar banco de dados
+### 3. Configuração do Banco de Dados
+
 ```bash
-cd projetoBack
+# Execute as migrações
 python manage.py migrate
+
+# Crie os usuários de teste
+python create_user.py
 ```
 
-### 5. Criar usuários de teste
-```bash
-python manage.py setup_groups
-python manage.py createsuperuser  # Para admin
-```
+### 4. Executar o Servidor
 
-### 6. Iniciar servidor
 ```bash
+# Inicie o servidor de desenvolvimento
 python manage.py runserver
+
+# O servidor estará disponível em: http://127.0.0.1:8000
 ```
 
-## Acesso
-- **Interface Web**: http://127.0.0.1:8000/
-- **Admin Django**: http://127.0.0.1:8000/admin/
-- **API**: http://127.0.0.1:8000/api/
+## 👥 Usuários Criados
 
-## Usuários de Teste
-- **user** / **user123** (usuário comum)
-- **admin** (criar via createsuperuser)
+O script `create_user.py` cria automaticamente:
+- **testuser** / test123 (usuário padrão)
+- **user1** / test123 (para testes de segurança)
+- **user2** / test123 (para testes de segurança)
 
-## Funcionalidades
-- ✅ Gestão de aparelhos elétricos
-- ✅ Cálculo de consumo e custos
-- ✅ API REST com autenticação por token
-- ✅ Controle de permissões (admin/usuário)
-- ✅ Interface web responsiva
+## 🔧 Funcionalidades
+
+- ✅ Autenticação com tokens JWT
+- ✅ CRUD completo de aparelhos elétricos
+- ✅ Cálculo automático de consumo (kWh)
+- ✅ Cálculo automático de custos (R$)
+- ✅ Análises de consumo mensal
+- ✅ Segurança entre usuários
+- ✅ Permissões granulares
+
+## 📡 Endpoints da API
+
+### Autenticação
+- `POST /api/login/` - Login e obtenção de token
+- `POST /api/usuarios/logout/` - Logout
+
+### Gestão de Aparelhos
+- `GET /api/gestao/aparelhos/` - Listar aparelhos do usuário
+- `POST /api/gestao/aparelhos/` - Criar novo aparelho
+- `GET /api/gestao/aparelhos/{id}/` - Detalhes do aparelho
+- `PUT /api/gestao/aparelhos/{id}/` - Atualizar aparelho
+- `DELETE /api/gestao/aparelhos/{id}/` - Deletar aparelho
+
+### Análises
+- `GET /api/gestao/analises/` - Análises de consumo do usuário
+
+## 🧪 Testes
+
+### Testes Automatizados
+```bash
+# Executar todos os testes
+python manage.py test
+
+# Executar com visualização
+python run_visual_tests.py
+
+# Ou usar o script batch (Windows)
+executar_testes.bat
+```
+
+### Testes no Postman
+1. Importe a coleção: `postman/collection.json`
+2. Configure o environment: `postman/environment_local.json`
+3. Execute os testes de segurança: `postman/teste_relacionamento.json`
+
+## 🛡️ Segurança
+
+- Autenticação obrigatória para todas as operações
+- Usuários só podem ver/editar seus próprios dados
+- Tokens seguros para autenticação
+- Validação de permissões em todas as operações
+
+## 🏗️ Estrutura do Projeto
+
+```
+projetoBack/
+├── core/                 # Configurações Django
+├── gestao/              # App principal (aparelhos/análises)
+├── usuarios/            # App de usuários e autenticação
+├── postman/             # Coleções de teste Postman
+├── create_user.py       # Script para criar usuários
+├── manage.py           # Gerenciador Django
+└── requirements.txt    # Dependências
+```
+
+## 💡 Como Usar
+
+1. **Faça login** para obter o token
+2. **Adicione aparelhos** com consumo, tempo de uso e dias
+3. **Visualize análises** automáticas de consumo e custo
+4. **Gerencie seus dados** com segurança
+
+## 🔍 Exemplo de Uso
+
+```json
+// Login
+POST /api/login/
+{
+  "username": "testuser",
+  "password": "test123"
+}
+
+// Criar aparelho
+POST /api/gestao/aparelhos/
+{
+  "aparelho": "Geladeira",
+  "consumo": "150",
+  "tempo": "24",
+  "dias_de_uso": 30
+}
+```
+
+## 🐛 Troubleshooting
+
+- **Erro de migração**: Execute `python manage.py migrate`
+- **Usuários não existem**: Execute `python create_user.py`
+- **Porta ocupada**: Mude a porta com `python manage.py runserver 8001`
+- **Dependências**: Reinstale com `pip install -r requirements.txt`
