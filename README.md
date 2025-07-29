@@ -36,6 +36,12 @@ python manage.py migrate
 
 # Crie os usuários de teste
 python create_user.py
+
+# Crie um superusuário (admin)
+python manage.py createsuperuser
+
+# Ou use o script personalizado
+python create_custom_user.py
 ```
 
 ### 4. Executar o Servidor
@@ -49,10 +55,22 @@ python manage.py runserver
 
 ## 👥 Usuários Criados
 
+### Usuários Comuns
 O script `create_user.py` cria automaticamente:
 - **testuser** / test123 (usuário padrão)
 - **user1** / test123 (para testes de segurança)
 - **user2** / test123 (para testes de segurança)
+
+### Superusuário (Admin)
+Para criar um administrador:
+```bash
+python manage.py createsuperuser
+```
+
+Ou use o script interativo:
+```bash
+python create_custom_user.py
+```
 
 ## 🔧 Funcionalidades
 
